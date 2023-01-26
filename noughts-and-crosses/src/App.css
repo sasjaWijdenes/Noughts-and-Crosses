@@ -1,0 +1,45 @@
+* {
+  border: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.menu {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  width: 60vw;
+  height: 90vh;
+}
+
+.menu li {
+  width: 50%;
+  display: flex;
+  justify-content: space-around;
+}
+
+.board {
+  width: 60vw;
+  height: 60vw;
+  max-width: 90vh;
+  max-height: 90vh;
+  display: grid;
+  row-gap: 10px;
+  column-gap: 10px;
+  margin: 30px;
+}
+
+.cell {
+  background-color: bisque; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
