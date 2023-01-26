@@ -19,27 +19,50 @@ body {
   width: 60vw;
   height: 90vh;
 }
-
 .menu li {
   width: 50%;
   display: flex;
   justify-content: space-around;
 }
 
+.board-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  width: 50vw;
+  height: 90vh;
+}
+.info-container {
+  width: 100%;
+  margin: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.is-turn {
+  background-color: blue;
+  color: white;
+}
 .board {
-  width: 60vw;
-  height: 60vw;
-  max-width: 90vh;
-  max-height: 90vh;
+  width: 40vw;
+  height: 40vw;
+  max-width: 70vh;
+  max-height: 70vh;
   display: grid;
   row-gap: 10px;
   column-gap: 10px;
   margin: 30px;
 }
-
 .cell {
   background-color: bisque; 
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.cell:hover {
+  background-color: aqua;
+}
+.X {
+  color: yellow;
 }
