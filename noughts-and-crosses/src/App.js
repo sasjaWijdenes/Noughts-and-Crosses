@@ -10,7 +10,7 @@ function App() {
   return (
     <div className="App">
       {isGameOver ?
-        <GameOverScreen /> :
+        <GameOverScreen setSettings={setSettings} /> :
         !settings.length ?
         <Menu setSettings={setSettings} /> :
         <BoardDisplay setIsGameOver={setIsGameOver} settings={settings} />
