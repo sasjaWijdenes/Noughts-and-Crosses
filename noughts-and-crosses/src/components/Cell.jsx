@@ -1,3 +1,3 @@
-const Cell = ({ selectCell }) => <div className="cell" onClick={selectCell} />
+const Cell = ({ position, selectCell }) => <div className="cell" onClick={(e) => selectCell(e, position)} />
 
 export default Cell
