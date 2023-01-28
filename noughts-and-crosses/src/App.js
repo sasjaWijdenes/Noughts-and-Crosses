@@ -5,15 +5,16 @@ import BoardDisplay from './components/BoardDisplay';
 import GameOverScreen from './components/GameOverScreen';
 
 function App() {
-  const [settings, setSettings] = useState([]), [isGameOver, setIsGameOver] = useState(false);
+  const [settings, setSettings] = useState([]), [isGameOver, setIsGameOver] = useState(false),
+      [winner, setWinner] = useState(null)
 
   return (
     <div className="App">
       {isGameOver ?
-        <GameOverScreen setSettings={setSettings} /> :
+        <GameOverScreen winner={winner} /> :
         !settings.length ?
         <Menu setSettings={setSettings} /> :
-        <BoardDisplay setIsGameOver={setIsGameOver} settings={settings} />
+        <BoardDisplay setIsGameOver={setIsGameOver} setWinner={setWinner} settings={settings} />
       }
     </div>
   );
