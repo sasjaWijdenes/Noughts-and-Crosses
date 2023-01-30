@@ -23,7 +23,7 @@ const BoardDisplay = ({ setWinner, settings: [isHumanP1, isHumanP2, size] }) => 
             } else alert('That Square is already taken.')
         }
     const winCheck = (cellArr, lastMove) => {  //Checks for win of current player or draw
-        if(cellArray.every(cell => cell === 'X' || cell === 'O')) setWinner('Draw')
+        if (cellArr.every(row => !row.includes(null))) setWinner('Draw')
         const directions = [[[-1, 0], [1, 0]], [[-1, 1], [1, -1]], [[0, 1], [0, -1]], [[1, 1], [-1, -1]]]
         directions.forEach(line => {
             let markCount = checkLine(cellArr, lastMove, line[0]) + checkLine(cellArr, lastMove, line[1])
