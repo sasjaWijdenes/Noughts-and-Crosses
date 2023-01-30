@@ -3,45 +3,39 @@ import Cell from "./Cell"
 
 
 
-const BoardDisplay = ({ setIsGameOver, setWinner, settings: [isHumanP1, isHumanP2, size] }) => {
+const BoardDisplay = ({ setWinner, settings: [isHumanP1, isHumanP2, size] }) => {
     const [cellArray, setCellArray] = useState(() => Array.from(Array(size), () => Array(size).fill(null))),
         [isP1Turn, setIsP1Turn] = useState(true)
     
-    const winCount = size-1;
+    const winCount = size;
     
-    const toggleTurn = () => setIsP1Turn(prevTurn => !prevTurn),
-        selectCell = (e, position) => {
+    const toggleTurn = () => setIsP1Turn(prevTurn => !prevTurn)
+    const selectCell = (e, position) => {
             if (!cellArray[position[0]][position[1]]) { //Check if valid cell
                 e.target.classList = `cell ${isP1Turn ? 'X' : 'O'}` //Add mark
                 setCellArray(prevArray => {         //Update array
                     const newArray = [...prevArray];
-                    newArray[position[0]][position[1]] = isP1Turn? 'X': 'O';
+                    newArray[position[0]][position[1]] = isP1Turn ? 'X' : 'O';
+                    winCheck(newArray, position)
                     return newArray;
                 });
-                winCheck(position)
-                toggleTurn()    //Switch Player
+                toggleTurn()            //Switch Player
             } else alert('That Square is already taken.')
         }
-    
-//TODO: Function to assess win conditions.
-    const winCheck = lastMove => {  //last move is co-ordinates of last cell selection
-        //Loops through each surrounding square and calls the checkLine function (TODO)
-        const directions = [[-1, 0], [-1, 1], [0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1]]
-        directions.forEach(dir => checkLine(lastMove, dir))
+    const winCheck = (cellArr, lastMove) => {  //Checks for win of current player or draw
+        if(cellArray.every(cell => cell === 'X' || cell === 'O')) setWinner('Draw')
+        const directions = [[[-1, 0], [1, 0]], [[-1, 1], [1, -1]], [[0, 1], [0, -1]], [[1, 1], [-1, -1]]]
+        directions.forEach(line => {
+            let markCount = checkLine(cellArr, lastMove, line[0]) + checkLine(cellArr, lastMove, line[1])
+            if (markCount - 1 >= winCount) setWinner(isP1Turn? 'X': 'O')
+        })
     }
-//TODO: Recursive checkLine function access the next square in the passed direction.
-    const checkLine = (thisCell, direction, c = 0) => {
-        c++
-        if (!cellArray[thisCell[0][thisCell[1]]] === isP1Turn? 'X': 'O') return false;
-        else if (c >= winCount) {
-            console.log('game over', {thisCell})
-            setIsGameOver(true)
-            setWinner(isP1Turn? 'X': 'O')
-        } else {
-            let nextCell = cellArray[thisCell[0] + direction[0]][thisCell[1] + direction[1]]
-            console.log({ thisCell, direction, c, cellArray, nextCell }, typeof thisCell[1])
-            checkLine(nextCell, direction, c)
-        }
+    const checkLine = (cellArr, thisCell, direction) => {   //recursively checks each cell in a given direction
+        let currRow = thisCell[0], currCol = thisCell[1], nextRow = currRow + direction[0], nextCol = currCol + direction[1]
+        return !(cellArr[currRow][currCol] === (isP1Turn ? 'X' : 'O')) ? 0              //is current cell current players mark?
+                : (nextRow >= 0 && nextRow < size && nextCol >= 0 && nextCol < size)    //does next cell exist?
+                ? checkLine(cellArr, [nextRow, nextCol], direction) + 1                 //call on next cell in line
+                : 1
     }
     
     return (
