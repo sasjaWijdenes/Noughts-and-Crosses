@@ -44,6 +44,23 @@ const BoardDisplay = ({ setWinner, settings: [isHumanP1, isHumanP2, size] }) => 
                 ? checkLine(cellArr, [nextRow, nextCol], direction, playerMark) + 1                 //call on next cell in line
                 : 1
     }
+
+    
+    const minMax = (gameState, playerMark, maximizingPlayer) => {         //minMax - explores game tree to find optimal move
+        if (maximizingPlayer) {
+            [...gameState].forEach((row, y) => {
+                row.forEach((cell, x) => {
+                    if (cell === null) {                        //If available cell 
+                        let maxEval = -Infinity,
+                            { array, gameRes } = selectCell(gameState, [y, x], playerMark)  
+                        
+                    }
+                })
+            })
+        } else {
+
+        }
+    }
     
     return (
         <div className="board-container">
