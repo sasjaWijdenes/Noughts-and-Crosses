@@ -45,20 +45,37 @@ const BoardDisplay = ({ setWinner, settings: [isHumanP1, isHumanP2, size] }) => 
                 : 1
     }
 
+    const computerTurn = (playerMark) => {
+        
+    }
     
-    const minMax = (gameState, playerMark, maximizingPlayer) => {         //minMax - explores game tree to find optimal move
+    const minMax = (gameState, lastMove, playerMark, maximizingPlayer) => {         //minMax - explores game tree to find optimal move
+        const result = winCheck(gameState, lastMove, playerMark)
+        if (result !== null) return result === playerMark? 1: result === 'draw'? 0: -1  //If game terminal, return result
         if (maximizingPlayer) {
+            let maxEval = -Infinity;
             [...gameState].forEach((row, y) => {
                 row.forEach((cell, x) => {
                     if (cell === null) {                        //If available cell 
-                        let maxEval = -Infinity,
-                            { array, gameRes } = selectCell(gameState, [y, x], playerMark)  
-                        
+                        let { array } = selectCell(gameState, [y, x], playerMark)
+                        let evaluation = minMax(array, [y, x], (playerMark === 'X' ? 'O' : 'X'), false)
+                        maxEval = maxEval < evaluation ? evaluation : maxEval;
+                        return maxEval
                     }
                 })
             })
         } else {
-
+            let minEval = Infinity;
+            [...gameState].forEach((row, y) => {
+                row.forEach((cell, x) => {
+                    if (cell === null) {                        //If available cell 
+                        let { array } = selectCell(gameState, [y, x], playerMark)
+                        let evaluation = minMax(array, [y, x], (playerMark === 'X' ? 'O' : 'X'), true)
+                        minEval = minEval > evaluation ? evaluation : minEval;
+                        return minEval;
+                    }
+                })
+            })
         }
     }
     
