@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Cell from "./Cell"
 
 const BoardDisplay = ({ setWinner, settings: [isHumanP1, isHumanP2, size] }) => {
@@ -6,6 +6,10 @@ const BoardDisplay = ({ setWinner, settings: [isHumanP1, isHumanP2, size] }) => 
         [isP1Turn, setIsP1Turn] = useState(true)
     
     const winCount = size;
+
+    useEffect(() => {
+        if (!isHumanP1) computerTurn(cellArray, 'X')
+    })
     
     const toggleTurn = () => setIsP1Turn(prevTurn => !prevTurn)
     const clickCell = (e, position) => {    //Places a mark and checks for win condition
@@ -45,14 +49,17 @@ const BoardDisplay = ({ setWinner, settings: [isHumanP1, isHumanP2, size] }) => 
                 : 1
     }
 
-    const computerTurn = (playerMark) => {
-        
+    const computerTurn = (playerMark, cellArray) => {
+        console.log('computerTurn: ', {playerMark, cellArray})
+        cellArray.forEach(cell => {
+            if (!cell) 
+        })
     }
     
     const minMax = (gameState, lastMove, playerMark, maximizingPlayer) => {         //minMax - explores game tree to find optimal move
         const result = winCheck(gameState, lastMove, playerMark)
         if (result !== null) return result === playerMark? 1: result === 'draw'? 0: -1  //If game terminal, return result
-        if (maximizingPlayer) {
+        if (maximizingPlayer) {             //Maximizing Player
             let maxEval = -Infinity;
             [...gameState].forEach((row, y) => {
                 row.forEach((cell, x) => {
@@ -60,11 +67,12 @@ const BoardDisplay = ({ setWinner, settings: [isHumanP1, isHumanP2, size] }) => 
                         let { array } = selectCell(gameState, [y, x], playerMark)
                         let evaluation = minMax(array, [y, x], (playerMark === 'X' ? 'O' : 'X'), false)
                         maxEval = maxEval < evaluation ? evaluation : maxEval;
-                        return maxEval
+                        console.log({gameState, lastMove, playerMark, maximizingPlayer, result, y, x, evaluation, maxEval})
                     }
                 })
             })
-        } else {
+            return maxEval
+        } else {                            //Minimizing Player
             let minEval = Infinity;
             [...gameState].forEach((row, y) => {
                 row.forEach((cell, x) => {
@@ -72,10 +80,11 @@ const BoardDisplay = ({ setWinner, settings: [isHumanP1, isHumanP2, size] }) => 
                         let { array } = selectCell(gameState, [y, x], playerMark)
                         let evaluation = minMax(array, [y, x], (playerMark === 'X' ? 'O' : 'X'), true)
                         minEval = minEval > evaluation ? evaluation : minEval;
-                        return minEval;
+                        console.log({gameState, lastMove, playerMark, maximizingPlayer, result, y, x, evaluation, maxEval})
                     }
                 })
             })
+            return minEval;
         }
     }
     
