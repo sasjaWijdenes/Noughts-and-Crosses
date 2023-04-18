@@ -49,44 +49,61 @@ const BoardDisplay = ({ setWinner, settings: [isHumanP1, isHumanP2, size] }) => 
                 : 1
     }
 
-    const computerTurn = (playerMark, cellArray) => {
-        console.log('computerTurn: ', {playerMark, cellArray})
-        cellArray.forEach(cell => {
-            if (!cell) 
-        })
-    }
+    // const computerTurn = (cellArray, playerMark) => {
+        
+    //     let minEval = Infinity;
+    //     let optimalMove = null;
+    //     cellArray.forEach((row, y) => {
+    //         row.forEach((cell, x) => {
+    //             if (cell === null) {
+    //                 let { array } = selectCell([...cellArray], [y, x], playerMark)
+    //                 let evaluation = minMax(array, [y, x], (playerMark === 'X' ? 'O' : 'X'), false)
+    //                 if (evaluation < minEval) {
+    //                     minEval = evaluation;
+    //                     optimalMove = [y, x];
+    //                 }
+    //             }
+    //         })
+    //     })
+    //     if (optimalMove) {
+    //         let { array } = selectCell([...cellArray], optimalMove, playerMark)
+    //         setCellArray(array);
+    //         toggleTurn();
+    //     }
+    //     console.log('computerTurn: ', { playerMark, cellArray })
+    // }
     
-    const minMax = (gameState, lastMove, playerMark, maximizingPlayer) => {         //minMax - explores game tree to find optimal move
-        const result = winCheck(gameState, lastMove, playerMark)
-        if (result !== null) return result === playerMark? 1: result === 'draw'? 0: -1  //If game terminal, return result
-        if (maximizingPlayer) {             //Maximizing Player
-            let maxEval = -Infinity;
-            [...gameState].forEach((row, y) => {
-                row.forEach((cell, x) => {
-                    if (cell === null) {                        //If available cell 
-                        let { array } = selectCell(gameState, [y, x], playerMark)
-                        let evaluation = minMax(array, [y, x], (playerMark === 'X' ? 'O' : 'X'), false)
-                        maxEval = maxEval < evaluation ? evaluation : maxEval;
-                        console.log({gameState, lastMove, playerMark, maximizingPlayer, result, y, x, evaluation, maxEval})
-                    }
-                })
-            })
-            return maxEval
-        } else {                            //Minimizing Player
-            let minEval = Infinity;
-            [...gameState].forEach((row, y) => {
-                row.forEach((cell, x) => {
-                    if (cell === null) {                        //If available cell 
-                        let { array } = selectCell(gameState, [y, x], playerMark)
-                        let evaluation = minMax(array, [y, x], (playerMark === 'X' ? 'O' : 'X'), true)
-                        minEval = minEval > evaluation ? evaluation : minEval;
-                        console.log({gameState, lastMove, playerMark, maximizingPlayer, result, y, x, evaluation, maxEval})
-                    }
-                })
-            })
-            return minEval;
-        }
-    }
+    // const minMax = (gameState, lastMove, playerMark, maximizingPlayer) => {         //minMax - explores game tree to find optimal move
+    //     const result = winCheck(gameState, lastMove, playerMark)
+    //     if (result !== null) return result === playerMark? 1: result === 'draw'? 0: -1  //If game terminal, return result
+    //     if (maximizingPlayer) {             //Maximizing Player
+    //         let maxEval = -Infinity;
+    //         [...gameState].forEach((row, y) => {
+    //             row.forEach((cell, x) => {
+    //                 if (cell === null) {                        //If available cell 
+    //                     let { array } = selectCell(gameState, [y, x], playerMark)
+    //                     let evaluation = minMax(array, [y, x], (playerMark === 'X' ? 'O' : 'X'), false)
+    //                     maxEval = maxEval < evaluation ? evaluation : maxEval;
+    //                     console.log({gameState, lastMove, playerMark, maximizingPlayer, result, y, x, evaluation, maxEval})
+    //                 }
+    //             })
+    //         })
+    //         return maxEval
+    //     } else {                            //Minimizing Player
+    //         let minEval = Infinity;
+    //         [...gameState].forEach((row, y) => {
+    //             row.forEach((cell, x) => {
+    //                 if (cell === null) {                        //If available cell 
+    //                     let { array } = selectCell(gameState, [y, x], playerMark)
+    //                     let evaluation = minMax(array, [y, x], (playerMark === 'X' ? 'O' : 'X'), true)
+    //                     minEval = minEval > evaluation ? evaluation : minEval;
+    //                     console.log({gameState, lastMove, playerMark, maximizingPlayer, result, y, x, evaluation, minEval})
+    //                 }
+    //             })
+    //         })
+    //         return minEval;
+    //     }
+    // }
     
     return (
         <div className="board-container">
