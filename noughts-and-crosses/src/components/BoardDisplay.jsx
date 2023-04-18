@@ -12,7 +12,12 @@ const BoardDisplay = ({ setWinner, settings: [isHumanP1, isHumanP2, size] }) => 
     const toggleTurn = () => setIsP1Turn(prevTurn => !prevTurn)
     const isValidCell = (cellArray, position) => cellArray[position[0]][position[1]]
     
-    const selectCell = (e, position) => {
+    const clickCell = (e, position) => {
+        if (isValidCell(cellArray, position)) alert('That Square is already taken.')
+        else updateArray(e, position, cellArray)
+    }
+
+    const updateArray = (e, position, array) => {
         if (isValidCell(cellArray, position)) alert('That Square is already taken.')
         else {
                 e.target.classList = `cell ${isP1Turn ? 'X' : 'O'}` //Add mark
@@ -26,6 +31,7 @@ const BoardDisplay = ({ setWinner, settings: [isHumanP1, isHumanP2, size] }) => 
                 toggleTurn()            //Switch Player
             }
     }
+
     
     const isWin = (cellArr, lastMove) => {  //Checks for win of current player
         let win = false
@@ -53,7 +59,7 @@ const BoardDisplay = ({ setWinner, settings: [isHumanP1, isHumanP2, size] }) => 
                 <div className={!isP1Turn? 'is-turn': ''}>Player Two: {isHumanP2? 'Human': 'Computer'}</div>
             </section>
             <div className="board" style={{gridTemplateColumns: `repeat(${size}, 1fr)`}} >
-                {cellArray.map((line, y) => line.map((cell, x) => <Cell position={[y, x]} selectCell={selectCell} />))}
+                {cellArray.map((line, y) => line.map((cell, x) => <Cell position={[y, x]} clickCell={clickCell} />))}
             </div>
         </div>
     )
