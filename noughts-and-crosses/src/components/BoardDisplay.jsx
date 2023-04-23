@@ -5,32 +5,85 @@ import Cell from "./Cell"
 
 const BoardDisplay = ({ setWinner, settings: [isHumanP1, isHumanP2, size] }) => {
     const [cellArray, setCellArray] = useState(() => Array.from(Array(size), () => Array(size).fill(null))),
-        [isP1Turn, setIsP1Turn] = useState(true)
+        [isP1Turn, setIsP1Turn] = useState(true),
+        [waitingForInput, setWaitingForInput] = useState(false)
     
     const winCount = size;
+    const isCurrentPlayerHuman = (isHumanP1 && isP1Turn) || (isHumanP2 && !isP1Turn)
     const directions = [[[-1, 0], [1, 0]], [[-1, 1], [1, -1]], [[0, 1], [0, -1]], [[1, 1], [-1, -1]]]
     const toggleTurn = () => setIsP1Turn(prevTurn => !prevTurn)
-    const isValidCell = (cellArray, position) => cellArray[position[0]][position[1]]
+
+    useEffect(() => {
+        playGame(cellArray, isP1Turn);
+    }, [cellArray, isP1Turn]);     
+
+    useEffect(() => {
+        console.log({isCurrentPlayerHuman, waitingForInput})
+        if (isCurrentPlayerHuman) setWaitingForInput(true)
+    }, [isCurrentPlayerHuman])
     
-    const clickCell = (e, position) => {
-        if (isValidCell(cellArray, position)) alert('That Square is already taken.')
-        else updateArray(e, position, cellArray)
+    const checkWinDraw = (cellArray, isP1Turn) => {
+        if (isWin(cellArray, [0, 0])) {
+          return isP1Turn ? 'X' : 'O';
+        } else if (isDraw(cellArray)) {
+          return 'draw';
+        }
+        return null;
+      };
+      
+
+    const playGame = (cellArray, isP1Turn) => {
+        console.log({isP1Turn})
+        const winner = checkWinDraw(cellArray, isP1Turn);
+        if (winner) {
+          setWinner(winner);
+        } else if (waitingForInput) {
+            console.log({isP1Turn, waitingForInput})
+          getMove(isP1Turn)
+          toggleTurn();
+        }
+      };
+      
+
+    function getRandomMove(board) {
+        const emptyCells = [];
+      
+        // Find all empty cells on the board
+        board.forEach(row => row.forEach(cell => {
+            if (!cell) emptyCells.push([board.indexOf(row), row.indexOf(cell)])
+        }))
+      
+        // Select a random empty cell
+        const randomIndex = Math.floor(Math.random() * emptyCells.length);
+        const randomCell = emptyCells[randomIndex];
+        console.log({board, emptyCells, randomIndex, randomCell})
+        return randomCell;
+      }
+      
+
+    const getMove = (isP1Turn) => {     //Get a move from the computer
+        const randMove = getRandomMove(cellArray)
+        console.log({randMove})
+        updateArray(randMove, cellArray)
     }
 
-    const updateArray = (e, position, array) => {
+    const isValidCell = (cellArray, position) => cellArray[position[0]][position[1]]
+    
+    const clickCell = (position) => {        //Handle cell being clicked
         if (isValidCell(cellArray, position)) alert('That Square is already taken.')
-        else {
-                e.target.classList = `cell ${isP1Turn ? 'X' : 'O'}` //Add mark
-                setCellArray(prevArray => {         //Update array
-                    const newArray = [...prevArray];
-                    newArray[position[0]][position[1]] = isP1Turn ? 'X' : 'O';
-                    if(isWin(newArray, position)) setWinner(isP1Turn ? 'X' : 'O')
-                    if(isDraw(newArray)) setWinner('draw')
-                    return newArray;
-                });
-                toggleTurn()            //Switch Player
-            }
+        else updateArray(position, cellArray)
+        setWaitingForInput(true)
     }
+
+    const updateArray = (position, array) => {
+        const cell = document.querySelector(`.cell[data-row="${position[0]}"][data-col="${position[1]}"]`);
+        cell.classList.add(isP1Turn ? 'X' : 'O');
+        setCellArray(prevArray => {
+          const newArray = [...prevArray];
+          newArray[position[0]][position[1]] = isP1Turn ? 'X' : 'O';
+          return newArray;
+        });
+      };
 
     
     const isWin = (cellArr, lastMove) => {  //Checks for win of current player
